@@ -18,7 +18,7 @@ public class MainApp extends Application {
         SugarContext.init(this);
 
         Realm.init(this);
-        RealmConfiguration configuration = new RealmConfiguration.Builder().build();
+        RealmConfiguration configuration = new RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build();
         Realm.setDefaultConfiguration(configuration);
 
         db = Room.databaseBuilder(getApplicationContext(),
