@@ -28,4 +28,16 @@ public class Model {
     public String getUserId() {
         return id;
     }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
 }

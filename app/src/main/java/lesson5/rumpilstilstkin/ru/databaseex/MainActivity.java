@@ -42,24 +42,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private TextView mInfoTextView;
     private ProgressBar progressBar;
-    Button btnLoad;
-    Button btnSaveAllSugar;
-    Button btnSelectAllSugar;
-    Button btnDeleteAllSugar;
-    Button btnSaveAllRealm;
-    Button btnSelectAllRealm;
-    Button btnDeleteAllRealm;
-    Button btnSaveAllRoom;
-    Button btnSelectAllRoom;
-    Button btnDeleteAllRoom;
 
     List<Model> modelList = new ArrayList<>();
     Realm realm;
+    UserDataSource usersDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        usersDataSource = new UserDataSource(this);
         initViews();
     }
 
@@ -72,26 +64,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initViews() {
         mInfoTextView = findViewById(R.id.tvLoad);
         progressBar = findViewById(R.id.progressBar);
-        btnLoad = findViewById(R.id.btnLoad);
-        btnSaveAllSugar = findViewById(R.id.btnSaveAllSugar);
-        btnSelectAllSugar = findViewById(R.id.btnSelectAllSugar);
-        btnDeleteAllSugar = findViewById(R.id.btnDeleteAllSugar);
-        btnSaveAllRealm = findViewById(R.id.btnSaveAllRealm);
-        btnSelectAllRealm = findViewById(R.id.btnSelectAllRealm);
-        btnDeleteAllRealm = findViewById(R.id.btnDeleteAllRealm);
-        btnSaveAllRoom = findViewById(R.id.btnSaveAllRoom);
-        btnSelectAllRoom = findViewById(R.id.btnSelectAllRoom);
-        btnDeleteAllRoom = findViewById(R.id.btnDeleteAllRoom);
-        btnLoad.setOnClickListener(this);
-        btnSaveAllSugar.setOnClickListener(this);
-        btnSelectAllSugar.setOnClickListener(this);
-        btnDeleteAllSugar.setOnClickListener(this);
-        btnSaveAllRealm.setOnClickListener(this);
-        btnSelectAllRealm.setOnClickListener(this);
-        btnDeleteAllRealm.setOnClickListener(this);
-        btnSaveAllRoom.setOnClickListener(this);
-        btnSelectAllRoom.setOnClickListener(this);
-        btnDeleteAllRoom.setOnClickListener(this);
+        findViewById(R.id.btnLoad).setOnClickListener(this);
+        findViewById(R.id.btnSaveAllSugar).setOnClickListener(this);
+        findViewById(R.id.btnSelectAllSugar).setOnClickListener(this);
+        findViewById(R.id.btnDeleteAllSugar).setOnClickListener(this);
+        findViewById(R.id.btnSaveAllRealm).setOnClickListener(this);
+        findViewById(R.id.btnSelectAllRealm).setOnClickListener(this);
+        findViewById(R.id.btnDeleteAllRealm).setOnClickListener(this);
+        findViewById(R.id.btnSaveAllRoom).setOnClickListener(this);
+        findViewById(R.id.btnSelectAllRoom).setOnClickListener(this);
+        findViewById(R.id.btnDeleteAllRoom).setOnClickListener(this);
+        findViewById(R.id.btnSaveAllSQLLiteOrigin).setOnClickListener(this);
+        findViewById(R.id.btnSelectAllSQLLiteOrigin).setOnClickListener(this);
+        findViewById(R.id.btnDeleteAllSQLLiteOrigin).setOnClickListener(this);
     }
 
     @Override
@@ -126,6 +111,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnDeleteAllRoom:
                 execute(this::deleteAllRoom);
+                break;
+            case R.id.btnSaveAllSQLLiteOrigin:
+                execute(this::saveSQLLiteOrigin);
+                break;
+            case R.id.btnSelectAllSQLLiteOrigin:
+                execute(this::getAllSQLLiteOrigin);
+                break;
+            case R.id.btnDeleteAllSQLLiteOrigin:
+                execute(this::deleteAllSQLLiteOrigin);
                 break;
         }
     }
@@ -355,6 +349,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Date second = new Date();
         Bundle bundle = new Bundle();
         bundle.putInt(EXT_COUNT, size);
+        bundle.putLong(EXT_TIME, second.getTime() - first.getTime());
+        return bundle;
+    }
+
+
+    private Bundle saveSQLLiteOrigin() {
+        Date first = new Date();
+        usersDataSource.open();
+        for (Model curItem : modelList) {
+            usersDataSource.addUser(curItem);
+        }
+        Date second = new Date();
+        List<Model> tempList = usersDataSource.getAllUsers();
+        usersDataSource.close();
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXT_COUNT, tempList.size());
+        bundle.putLong(EXT_TIME, second.getTime() - first.getTime());
+        return bundle;
+    }
+
+    private Bundle getAllSQLLiteOrigin() {
+        Date first = new Date();
+        usersDataSource.open();
+        List<Model> tempList = usersDataSource.getAllUsers();
+        usersDataSource.close();
+        Date second = new Date();
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXT_COUNT, tempList.size());
+        bundle.putLong(EXT_TIME, second.getTime() - first.getTime());
+        return bundle;
+    }
+
+    private Bundle deleteAllSQLLiteOrigin() {
+        Date first = new Date();
+        usersDataSource.open();
+        int count = usersDataSource.deleteAll();
+        usersDataSource.close();
+        Date second = new Date();
+        Bundle bundle = new Bundle();
+        bundle.putInt(EXT_COUNT, count);
         bundle.putLong(EXT_TIME, second.getTime() - first.getTime());
         return bundle;
     }

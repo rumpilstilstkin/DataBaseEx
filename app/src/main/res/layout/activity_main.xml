@@ -49,6 +49,29 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:text="SQLLiteOrigin" />
+
+                <Button
+                    android:id="@+id/btnSaveAllSQLLiteOrigin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Сохранить в БД" />
+
+                <Button
+                    android:id="@+id/btnSelectAllSQLLiteOrigin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Показать все" />
+
+                <Button
+                    android:id="@+id/btnDeleteAllSQLLiteOrigin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Удалить все" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="SugarORM" />
 
                 <Button
