@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Single;
-import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
@@ -215,16 +214,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @SuppressLint("CheckResult")
     private void execute(Callable<Bundle> call) {
-        Single<Bundle> singleDeleteAll = Single.create((SingleOnSubscribe<Bundle>) emitter -> {
-            try {
-                emitter.onSuccess(call.call());
-            }
-            catch (Exception e) {
-                emitter.onError(e);
-            }
-        }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
-        singleDeleteAll.subscribeWith(createObserver());
+        Single.fromCallable(call)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(createObserver());
     }
 
     private Bundle saveShugar() {
@@ -283,9 +276,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
         Date second = new Date();
-        long count = realm.where(RealmModel.class).count();
+        RealmResults count = realm.where(RealmModel.class).findAll();
         Bundle bundle = new Bundle();
-        bundle.putInt(EXT_COUNT, (int) count);
+        bundle.putInt(EXT_COUNT, count.size());
         bundle.putLong(EXT_TIME, second.getTime() - first.getTime());
         realm.close();
         return bundle;
